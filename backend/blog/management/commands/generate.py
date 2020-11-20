@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from faker import Faker
 
-from blog.models import Tag, Vote, Article, Comment
+from blog.models import Tag, Article, Comment
+from votes.models import Vote
 
 fake = Faker()
 
@@ -32,7 +33,7 @@ class Command(BaseCommand):
                     first_name=(first_name := fake.first_name()),
                     last_name=(last_name := fake.last_name()),
                     username=(username := f'{first_name}{last_name}{offset_id + i}'),
-                    password=make_password(f'{username}password', None, 'md5'),
+                    password=make_password(f'{username}password'),
                     email=f'{username}@example.com',
                 )
                 for i in range(users)
@@ -57,7 +58,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def fast_vote(kindness_coefficient=0.5):
-        return 1 if fake.random.random() < kindness_coefficient else -1
+        return fake.random.random() < kindness_coefficient
 
     @staticmethod
     def create_articles(articles, max_tags_per_article, max_sentences_per_article):
@@ -118,11 +119,11 @@ class Command(BaseCommand):
             rating = 0
             kindness_coefficient = fake.random.random()
             for user_id in fake.random.sample(user_ids, n_votes):
-                value = Command.fast_vote(kindness_coefficient)
-                rating += value
+                vote = Command.fast_vote(kindness_coefficient)
+                rating += -1 + 2 * vote
                 votes.append(
                     Vote(
-                        value=value,
+                        vote=vote,
                         object_id=model.pk,
                         content_type_id=model_type_id,
                         user_id=user_id,
