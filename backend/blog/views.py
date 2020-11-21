@@ -37,6 +37,8 @@ class TagViewSet(mixins.CreateModelMixin,
 class ArticleViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+    filterset_fields = '__all__'
+    search_fields = ('title', 'body')
 
     def get_permissions(self):
         if self.request.method == 'GET':

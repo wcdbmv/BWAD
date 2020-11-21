@@ -1,5 +1,6 @@
 Django
 django-db-readonly
+django-filter
 django-sslserver
 djangorestframework
 djangorestframework-jwt

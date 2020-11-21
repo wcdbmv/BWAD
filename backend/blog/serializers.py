@@ -27,8 +27,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class TagSerializer(serializers.HyperlinkedModelSerializer):
-    tag = serializers.CharField(write_only=True)
-
     class Meta:
         model = Tag
         fields = ('url', 'tag')
