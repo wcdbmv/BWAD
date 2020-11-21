@@ -1,5 +1,6 @@
 Django
 django-db-readonly
+django-sslserver
 djangorestframework
 djangorestframework-jwt
 Faker
