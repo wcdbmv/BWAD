@@ -1,4 +1,5 @@
 Django
+django-db-readonly
 djangorestframework
 djangorestframework-jwt
 Faker
