@@ -1,0 +1,11 @@
+Django
+django-db-readonly
+django-filter
+django-sslserver
+djangorestframework
+djangorestframework-jwt
+Faker
+pyyml
+uritemplate
+votes
+wheel
