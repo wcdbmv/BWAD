@@ -3,14 +3,12 @@ from django.views.generic import TemplateView
 from rest_framework import routers
 from rest_framework.schemas import get_schema_view
 from blog.views import UserViewSet, TagViewSet, ArticleViewSet, CommentViewSet
-from votes.api import VoteQueryset
 
 router = routers.DefaultRouter()
 router.register('users', UserViewSet)
 router.register('tags', TagViewSet)
 router.register('articles', ArticleViewSet)
 router.register('comments', CommentViewSet)
-router.register('votes', VoteQueryset)
 
 urlpatterns = [
     path('openapi', get_schema_view(

@@ -2,10 +2,10 @@ Django
 django-db-readonly
 django-filter
 django-sslserver
+django-vote
 djangorestframework
 djangorestframework-jwt
 Faker
 pyyml
 uritemplate
-votes
 wheel
