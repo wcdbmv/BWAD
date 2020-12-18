@@ -2,7 +2,7 @@ from django.test import TestCase
 # from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from blog.models import Tag, Article, Comment
-from blog.tests.user_builder import UserBuilder
+from blog.tests.unit.user_builder import UserBuilder
 
 
 def make_password_stub(s):
@@ -52,6 +52,14 @@ class ArticleTest(TestCase):
         cls.test_article_01.refresh_from_db()
         cls.test_article_02.refresh_from_db()
 
+    def get_test_article_01(self):
+        self.test_article_01.refresh_from_db()
+        return self.test_article_01
+
+    def get_test_article_02(self):
+        self.test_article_02.refresh_from_db()
+        return self.test_article_02
+
     def test_to_string(self):
         expected_string_test_article_01 = '"test_title_01" by test_username_01'
         expected_string_test_article_02 = '"test_title_02" by test_username_02'
@@ -69,10 +77,8 @@ class ArticleTest(TestCase):
         self.test_article_01.votes.up(self.test_user_01.pk)
         self.test_article_02.votes.down(self.test_user_02.pk)
 
-        self.test_article_01.refresh_from_db()
-        self.test_article_02.refresh_from_db()
-        self.assertEqual(self.test_article_01.vote_score, expected_test_article_01_vote_score)
-        self.assertEqual(self.test_article_02.vote_score, expected_test_article_02_vote_score)
+        self.assertEqual(self.get_test_article_01().vote_score, expected_test_article_01_vote_score)
+        self.assertEqual(self.get_test_article_02().vote_score, expected_test_article_02_vote_score)
 
     def test_delete_vote_score(self):
         expected_test_article_01_vote_score = 0
@@ -83,10 +89,8 @@ class ArticleTest(TestCase):
         self.test_article_02.votes.delete(self.test_user_01.pk)
         self.test_article_02.votes.delete(self.test_user_02.pk)
 
-        self.test_article_01.refresh_from_db()
-        self.test_article_02.refresh_from_db()
-        self.assertEqual(self.test_article_01.vote_score, expected_test_article_01_vote_score)
-        self.assertEqual(self.test_article_02.vote_score, expected_test_article_02_vote_score)
+        self.assertEqual(self.get_test_article_01().vote_score, expected_test_article_01_vote_score)
+        self.assertEqual(self.get_test_article_02().vote_score, expected_test_article_02_vote_score)
 
 
 class CommentTest(TestCase):
@@ -103,6 +107,14 @@ class CommentTest(TestCase):
         cls.test_comment_02.votes.down(cls.test_user_01.pk)
         cls.test_comment_01.refresh_from_db()
         cls.test_comment_02.refresh_from_db()
+
+    def get_test_comment_01(self):
+        self.test_comment_01.refresh_from_db()
+        return self.test_comment_01
+
+    def get_test_comment_02(self):
+        self.test_comment_02.refresh_from_db()
+        return self.test_comment_02
 
     def test_to_string(self):
         expected_string_test_comment_01 = '"test_body_01..." on test_title_01 by test_username_01'
@@ -121,10 +133,8 @@ class CommentTest(TestCase):
         self.test_comment_01.votes.up(self.test_user_01.pk)
         self.test_comment_02.votes.down(self.test_user_02.pk)
 
-        self.test_comment_01.refresh_from_db()
-        self.test_comment_02.refresh_from_db()
-        self.assertEqual(self.test_comment_01.vote_score, expected_test_comment_01_vote_score)
-        self.assertEqual(self.test_comment_02.vote_score, expected_test_comment_02_vote_score)
+        self.assertEqual(self.get_test_comment_01().vote_score, expected_test_comment_01_vote_score)
+        self.assertEqual(self.get_test_comment_02().vote_score, expected_test_comment_02_vote_score)
 
     def test_delete_vote_score(self):
         expected_test_comment_01_vote_score = 0
@@ -135,7 +145,5 @@ class CommentTest(TestCase):
         self.test_comment_02.votes.delete(self.test_user_01.pk)
         self.test_comment_02.votes.delete(self.test_user_02.pk)
 
-        self.test_comment_01.refresh_from_db()
-        self.test_comment_02.refresh_from_db()
-        self.assertEqual(self.test_comment_01.vote_score, expected_test_comment_01_vote_score)
-        self.assertEqual(self.test_comment_02.vote_score, expected_test_comment_02_vote_score)
+        self.assertEqual(self.get_test_comment_01().vote_score, expected_test_comment_01_vote_score)
+        self.assertEqual(self.get_test_comment_02().vote_score, expected_test_comment_02_vote_score)
