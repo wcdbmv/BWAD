@@ -5,7 +5,6 @@ from django.contrib.contenttypes.models import ContentType
 from faker import Faker
 
 from blog.models import Tag, Article, Comment
-from votes.models import Vote
 
 fake = Faker()
 
@@ -58,7 +57,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def fast_vote(kindness_coefficient=0.5):
-        return fake.random.random() < kindness_coefficient
+        return int(fake.random.random() > kindness_coefficient)
 
     @staticmethod
     def create_articles(articles, max_tags_per_article, max_sentences_per_article):
@@ -105,34 +104,19 @@ class Command(BaseCommand):
         )
 
     @staticmethod
-    def generate_votes_for_model(model_cls, max_votes_per_article):
-        if max_votes_per_article == 0:
+    def generate_votes_for_model(model_cls, max_votes_per_unit):
+        if max_votes_per_unit == 0:
             return
 
         user_ids = list(User.objects.values_list('id', flat=True))  # list for sample()
         models = model_cls.objects.all()
-        model_type_id = ContentType.objects.get_for_model(model_cls).id
 
-        votes = []
         for model in models:
-            n_votes = Command.fast_randint(0, max_votes_per_article)
-            rating = 0
+            n_votes = Command.fast_randint(0, max_votes_per_unit)
             kindness_coefficient = fake.random.random()
             for user_id in fake.random.sample(user_ids, n_votes):
                 vote = Command.fast_vote(kindness_coefficient)
-                rating += -1 + 2 * vote
-                votes.append(
-                    Vote(
-                        vote=vote,
-                        object_id=model.pk,
-                        content_type_id=model_type_id,
-                        user_id=user_id,
-                    )
-                )
-            model.rating += rating
-
-        Vote.objects.bulk_create(votes)
-        model_cls.objects.bulk_update(models, ['rating'])
+                model.votes.vote(user_id, vote)
 
     def handle(self, *args, **options):
         if (users := options["users"]) > 0:

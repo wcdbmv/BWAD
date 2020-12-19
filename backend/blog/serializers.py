@@ -35,10 +35,10 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
 class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Article
-        fields = ('url', 'user', 'title', 'body', 'pub_date', 'tags', 'rating')
+        fields = ('url', 'user', 'title', 'body', 'pub_date', 'tags', 'vote_score')
 
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Comment
-        fields = ('url', 'user', 'article', 'body', 'pub_date', 'rating')
+        fields = ('url', 'user', 'article', 'body', 'pub_date', 'vote_score')

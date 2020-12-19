@@ -2,6 +2,7 @@ from rest_framework import viewsets, mixins, permissions
 from django.contrib.auth.models import User
 from blog.models import Tag, Article, Comment
 from blog.serializers import UserSerializer, TagSerializer, ArticleSerializer, CommentSerializer
+from vote.views import VoteMixin
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -34,7 +35,7 @@ class TagViewSet(mixins.CreateModelMixin,
             return [permissions.IsAuthenticated()]
 
 
-class ArticleViewSet(viewsets.ModelViewSet):
+class ArticleViewSet(viewsets.ModelViewSet, VoteMixin):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     filterset_fields = '__all__'
@@ -47,7 +48,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
             return [permissions.IsAuthenticated()]
 
 
-class CommentViewSet(viewsets.ModelViewSet):
+class CommentViewSet(viewsets.ModelViewSet, VoteMixin):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
