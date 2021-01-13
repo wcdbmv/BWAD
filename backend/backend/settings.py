@@ -44,10 +44,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'behave_django',
     'django_filters',
     'sslserver',
     'vote',
 ]
+
+LOGIN_REDIRECT_URL = '/api/v1/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

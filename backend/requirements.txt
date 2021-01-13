@@ -1,3 +1,4 @@
+behave-django
 Django
 django-db-readonly
 django-filter
@@ -7,5 +8,7 @@ djangorestframework
 djangorestframework-jwt
 Faker
 pyyml
+requests
+selenium
 uritemplate
 wheel

@@ -1,0 +1,4 @@
+[behave]
+paths = blog/tests/behave
+junit_directory = blog/tests/reports
+junit = yes
