@@ -1,37 +1,22 @@
-import os
-import django
-from django.test.runner import DiscoverRunner
-from django.test.testcases import LiveServerTestCase
-from behave import fixture, use_fixture
-import os
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
 
 
-@fixture
-def django_test_runner(context):
-    django.setup()
-    context.test_runner = DiscoverRunner()
-    context.test_runner.setup_test_environment()
-    context.old_db_config = context.test_runner.setup_databases()
-    yield
-    context.test_runner.teardown_databases(context.old_db_config)
-    context.test_runner.teardown_test_environment()
-
-
-@fixture
-def django_test_case(context):
-    context.test_case = LiveServerTestCase
-    context.test_case.setUpClass()
-    yield
-    context.test_case.tearDownClass()
-    del context.test_case
-
-
-os.environ["DJANGO_SETTINGS_MODULE"] = "test_project.settings"
+def wait(self, until, who=None, timeout=30, step=0.1):
+    if who is None:
+        who = self.driver
+    return WebDriverWait(who, timeout, step).until(until)
 
 
 def before_all(context):
-    use_fixture(django_test_runner, context)
+    context.browser = webdriver.Firefox()
+    context.browser.implicitly_wait(1)
+    context.server_url = 'http://localhost:8000'
 
 
-def before_scenario(context, scenario):
-    use_fixture(django_test_case, context)
+def after_all(context):
+    context.browser.quit()
+
+
+def before_feature(context, feature):
+    pass

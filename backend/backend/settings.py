@@ -174,3 +174,7 @@ JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_EXPIRATION_DELTA': timedelta(seconds=60 * 60 * 8),
 }
+
+
+TEST_RUNNER = 'profiling.ProfilingRunner'
+TEST_PROFILE = 'profile'  # Set to a file path to create a pstats readable binary

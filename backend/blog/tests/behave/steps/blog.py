@@ -1,4 +1,3 @@
-import requests
 from behave import *
 
 from django.contrib.auth.models import User
@@ -14,52 +13,51 @@ ARTICLE_BODY = 'test-behave-body'
 COMMENT_BODY = 'Good article!'
 
 
-@step('An url')
+@step('My account')
 def step_impl(context):
-    context.url = context.test_case.live_server_url
-    print(context.url)
+    context.user = User.objects.create_user(USERNAME, email=EMAIL, password=PASSWORD)
+
+    br = context.browser
+    br.get(context.base_url + '/api-auth/login/')
+    br.find_element_by_name('username').send_keys(USERNAME)
+    br.find_element_by_name('password').send_keys(PASSWORD)
+    br.find_element_by_name('submit').click()
 
 
-@step('I create profile')
+@step('exists article')
 def step_impl(context):
-    context.response_create_user = requests.post(f'{context.url}/users/', data={
-        'username': USERNAME,
-        'email': EMAIL,
-        'password': PASSWORD,
-    })
-    context.response_create_user_json = context.response_create_user.json()
+    context.article = Article.objects.create(
+        user=context.user,
+        title=ARTICLE_TITLE,
+        body=ARTICLE_BODY,
+    )
 
 
-@step('log in')
+from time import sleep
+
+
+@step('I create comment "Good article!"')
 def step_impl(context):
-    context.response_log_in = requests.post(f'{context.url}/api-auth/login/', data={
-        'username': USERNAME,
-        'password': PASSWORD,
-    })
-    context.response_log_in_json = context.response_log_in.json()
-
-
-@step('create article')
-def step_impl(context):
-    context.response_create_article = requests.post(f'{context.url}/api/v1/articles/', data={
-        'user': f'{context.url}/api/v1/users/{User.objects.get(username=USERNAME).pk}/',
-        'title': ARTICLE_TITLE,
-        'body': ARTICLE_BODY,
-    })
-    context.response_create_article_json = context.response_create_article.json()
-
-
-@step('create comment "Good article!"')
-def step_impl(context):
-    context.response_create_comment = requests.post(f'{context.url}/api/v1/comments/', data={
-        'user': f'{context.url}/api/v1/users/{User.objects.get(username=USERNAME).pk}/',
-        'article': f'{context.url}/api/v1/articles/{Article.objects.get(title=ARTICLE_TITLE)}/',
-        'body': COMMENT_BODY,
-    })
-    context.response_create_comment_json = context.response_create_comment.json()
+    br = context.browser
+    br.get(context.base_url + '/api/v1/')
+    br.find_element_by_css_selector('#operations-api-createComment').click()
+    br.find_element_by_css_selector('#operations-api-createComment .try-out__btn').click()
+    textarea = br.find_element_by_css_selector('#operations-api-createComment .body-param__text')
+    textarea.clear()
+    textarea.send_keys(
+        f'{{'
+        f'"user": "{context.base_url}/api/v1/users/{context.user.pk}/", '
+        f'"article": "{context.base_url}/api/v1/articles/{context.article.pk}/", '
+        f'"body": "{COMMENT_BODY}"'
+        f'}}'
+    )
+    br.find_element_by_css_selector('#operations-api-createComment .execute').click()
+    br.find_element_by_css_selector('#operations-api-createComment .execute').click()
 
 
 @then('I should see "Good article!" in page')
 def step_impl(context):
-    context.response_get_comments = requests.get(f'{context.url}/api/v1/comments/').text
-    assert COMMENT_BODY in context.response_get_comments
+    br = context.browser
+    br.get(f'{context.base_url}/api/v1/comments/')
+    sleep(5)
+    assert COMMENT_BODY in br.page_source
