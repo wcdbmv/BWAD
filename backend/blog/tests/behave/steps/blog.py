@@ -59,5 +59,4 @@ def step_impl(context):
 def step_impl(context):
     br = context.browser
     br.get(f'{context.base_url}/api/v1/comments/')
-    sleep(5)
     assert COMMENT_BODY in br.page_source

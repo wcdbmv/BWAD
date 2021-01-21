@@ -34,10 +34,11 @@ class RingTest(TestCase):
         for i in range(self.n):
             self.__test_live()
 
-    #@profile
+
     def tearDown(self):
         print(f'{self.passed}/{self.n}')
 
+    #@profile
     def __test_live(self):
         #
         # Create user
