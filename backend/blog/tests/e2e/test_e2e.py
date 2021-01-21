@@ -26,15 +26,19 @@ class RingTest(TestCase):
         return self.__get(Comment)
 
     def test_live(self):
-        self.n = int(os.getenv('TEST_REPEATS', 100))
+        # DEFAULT_REPEATS = 100
+        DEFAULT_REPEATS = 1
+        self.n = int(os.getenv('TEST_REPEATS', DEFAULT_REPEATS))
         self.passed = 0
 
         for i in range(self.n):
             self.__test_live()
 
+
     def tearDown(self):
         print(f'{self.passed}/{self.n}')
 
+    #@profile
     def __test_live(self):
         #
         # Create user

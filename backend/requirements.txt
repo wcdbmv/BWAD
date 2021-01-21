@@ -1,3 +1,5 @@
+wheel
+behave-django
 Django
 django-db-readonly
 django-filter
@@ -6,6 +8,8 @@ django-vote
 djangorestframework
 djangorestframework-jwt
 Faker
+memory_profiler
 pyyml
+requests
+selenium
 uritemplate
-wheel
